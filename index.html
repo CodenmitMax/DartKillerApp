@@ -1,10 +1,259 @@
-<!doctype html>
-<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111713"><title>Killer Club · Darts</title><link rel="stylesheet" href="style.css"></head><body>
-<header><a class="brand" href="./"><span class="logo">◎</span> KILLER CLUB<span class="small">DARTS SOCIAL CLUB</span></a><nav><button id="profilesBtn" class="quiet">◉ Spieler & Statistik</button><button id="soundBtn" class="quiet" aria-pressed="true">♪ Sound an</button><button id="fullscreen" class="quiet">⛶ Vollbild</button><button id="rulesBtn" class="quiet">ⓘ Spielregeln</button></nav></header>
-<main><div class="compactheading"><div class="eyebrow">DARTS NIGHT / KILLER</div><h1>Last player <em>standing.</em></h1></div><section class="toolbar"><div><span class="live"></span> <b id="matchStatus">Bereit für die erste Runde</b><span id="round" class="muted"></span></div><button id="newBtn" class="quiet">＋ Neues Spiel</button></section>
-<div class="layout"><section><div class="sectiontitle"><h2>Das Line-up</h2><span id="playerCount"></span></div><div id="players" class="players"></div><div class="hint"><span>↗</span><div><b>Erst zum Killer. Dann aufs Ganze.</b><p>Sammle 3 Treffer auf deine Zahl – auch über mehrere Runden. Single zählt 1, Double 2, Triple 3.</p></div></div></section>
-<section class="console"><div class="eyebrow">AM OCHE</div><div id="turn"></div><div id="darts" class="darts"></div><div id="targetPicker"></div><div class="inputlabel">WAS HAST DU GETROFFEN? <span>Ein Klick = ein Dart</span></div><div class="multipliers" id="multipliers"><button data-m="1">Single <small>×1</small></button><button data-m="2">Double <small>×2</small></button><button data-m="3">Triple <small>×3</small></button></div><div class="extras"><button id="miss">Daneben <span>0</span></button></div><div class="actions"><button id="undo" class="quiet">↶ Zurück</button><button id="skip" class="quiet">Aufnahme beenden →</button></div><p class="saveinfo" id="saveinfo">● Spielstand wird auf diesem Gerät gespeichert</p></section></div>
-<section class="history"><div class="sectiontitle"><h2>Match-Verlauf</h2><span>JEDER DART ZÄHLT</span></div><div id="log" aria-live="polite"></div></section><footer>KILLER CLUB <span>GOOD DARTS. GREAT COMPANY.</span><span>Made for game night. ↗</span></footer></main>
-<dialog id="setup"><form id="setupForm"><div class="eyebrow">LET’S PLAY</div><h2>Dein nächstes Match.</h2><p>Namen eintragen, Zahlen wählen, loslegen. 2–8 Spieler.</p><p class="profilehelp">Gespeicherten Namen aus der Vorschlagsliste wählen oder einen neuen eingeben. „Merken“ speichert ein neues Profil samt künftiger Statistik auf diesem Gerät.</p><datalist id="savedPlayers"></datalist><div id="setupRows"></div><button type="button" id="add" class="quiet">＋ Spieler hinzufügen</button><div class="settings"><label>Herzen bis zum Killer<select id="lives"><option>3</option></select></label></div><section class="startsettings"><div class="eyebrow">WER FÄNGT AN?</div><label id="duelSettings" class="toggleline"><span>Abwechselnder Start bei 2 Spielern<small>Aus: Der erste Spieler in der Liste beginnt.</small></span><input type="checkbox" id="alternateStart" role="switch"></label><label id="groupSettings">Startspieler bei 3–8 Spielern<select id="startMode"><option value="random">Zufällig bestimmen</option><option value="bull">Ausbullen</option></select></label><div id="bullSettings"><p>Jeder wirft auf das Bull. Wer am nächsten liegt, beginnt. Bei Gleichstand erneut werfen.</p><label>Gewinner des Ausbullens<select id="bullWinner"></select></label></div><p id="startPreview" aria-live="polite"></p></section><p class="ruletext">Start mit 0 Herzen. Eigene Zahl: Single +1, Double +2, Triple +3, maximal 3 Herzen. Mit 3 Herzen bist du Killer. Gegnerische Killer ziehen Herzen ab. Bei einem Angriff auf 0 Herzen scheidest du aus; die 0 Herzen am Start allein eliminieren dich nicht.</p><p id="error" role="alert"></p><div class="dialogactions"><button type="button" id="cancel" class="quiet">Abbrechen</button><button class="primary" type="submit">Match starten ↗</button></div></form></dialog>
-<dialog id="rules"><div class="eyebrow">HOW TO PLAY</div><h2>Killer. Einfach erklärt.</h2><ol><li><b>Starte bei null.</b> Alle starten mit 0 von 3 Herzen und sind im Spiel.</li><li><b>Baue Herzen auf.</b> Triff deine eigene Zahl: Single +1, Double +2, Triple +3. Herzen bleiben über Runden erhalten; maximal 3.</li><li><b>Volle Herzen = Killer.</b> Mit 3 Herzen kannst du Gegner angreifen: Single −1, Double −2, Triple −3. Nach Herzverlust füllst du dein eigenes Feld wieder auf.</li><li><b>Null nach einem Angriff = raus.</b> Ausgeschiedene Spieler können nicht zurückkehren. Wer als Letzter übrig bleibt, gewinnt.</li></ol><p>Die eigene Zahl baut immer Herzen auf, bis maximal 3. Daneben, Bull und unbelegte Felder haben keinen Effekt. Pro Aufnahme hast du drei Darts.</p><button class="primary" id="closeRules">Alles klar →</button></dialog>
-<dialog id="profilesDialog"><div class="eyebrow">THE CLUB / SPIELERPROFILE</div><h2>Deine Runde. Eure Bilanz.</h2><p>Gespeichert auf diesem Gerät · Nur abgeschlossene Matches zählen.</p><div id="profileList"></div><section class="duelpanel"><div class="eyebrow">HEAD TO HEAD</div><h3>Das direkte Duell</h3><div class="compare"><select id="compareA" aria-label="Erster Vergleichsspieler"></select><span>VS</span><select id="compareB" aria-label="Zweiter Vergleichsspieler"></select></div><div id="duelResult" aria-live="polite"></div></section><button id="closeProfiles" class="primary">Zurück zum Board →</button></dialog><script src="app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111713">
+  <title>Killer Club · Darts</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ============================================================
+       HEADER & NAVIGATION
+       ============================================================ -->
+  <header>
+    <a class="brand" href="./">
+      <span class="logo">◎</span> KILLER CLUB
+      <span class="small">DARTS SOCIAL CLUB</span>
+    </a>
+    <nav>
+      <button id="profilesBtn" class="quiet">◉ Spieler & Statistik</button>
+      <button id="soundBtn" class="quiet" aria-pressed="true">♪ Sound an</button>
+      <button id="fullscreen" class="quiet">⛶ Vollbild</button>
+      <button id="rulesBtn" class="quiet">ⓘ Spielregeln</button>
+    </nav>
+  </header>
+
+  <!-- ============================================================
+       MAIN GAME INTERFACE
+       ============================================================ -->
+  <main>
+    <!-- Heading Section -->
+    <div class="compactheading">
+      <div class="eyebrow">DARTS NIGHT / KILLER</div>
+      <h1>Last player <em>standing.</em></h1>
+    </div>
+
+    <!-- Toolbar -->
+    <section class="toolbar">
+      <div>
+        <span class="live"></span>
+        <b id="matchStatus">Bereit für die erste Runde</b>
+        <span id="round" class="muted"></span>
+      </div>
+      <button id="newBtn" class="quiet">＋ Neues Spiel</button>
+    </section>
+
+    <!-- Main Layout -->
+    <div class="layout">
+      <!-- Player Lineup Section -->
+      <section>
+        <div class="sectiontitle">
+          <h2>Das Line-up</h2>
+          <span id="playerCount"></span>
+        </div>
+        <div id="players" class="players"></div>
+        <div class="hint">
+          <span>↗</span>
+          <div>
+            <b>Erst zum Killer. Dann aufs Ganze.</b>
+            <p>Sammle 3 Treffer auf deine Zahl – auch über mehrere Runden. Single zählt 1, Double 2, Triple 3.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Game Console Section -->
+      <section class="console">
+        <div class="eyebrow">AM OCHE</div>
+        <div id="turn"></div>
+
+        <!-- Dart Tracker -->
+        <div id="darts" class="darts"></div>
+
+        <!-- Target Picker -->
+        <div id="targetPicker"></div>
+
+        <!-- Input Controls -->
+        <div class="inputlabel">WAS HAST DU GETROFFEN? <span>Ein Klick = ein Dart</span></div>
+
+        <!-- Multiplier Buttons -->
+        <div class="multipliers" id="multipliers">
+          <button data-m="1">Single <small>×1</small></button>
+          <button data-m="2">Double <small>×2</small></button>
+          <button data-m="3">Triple <small>×3</small></button>
+        </div>
+
+        <!-- Miss Button -->
+        <div class="extras">
+          <button id="miss">Daneben <span>0</span></button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+          <button id="undo" class="quiet">↶ Zurück</button>
+          <button id="skip" class="quiet">Aufnahme beenden →</button>
+        </div>
+
+        <!-- Save Status -->
+        <p class="saveinfo" id="saveinfo">● Spielstand wird auf diesem Gerät gespeichert</p>
+      </section>
+    </div>
+
+    <!-- Match History Section -->
+    <section class="history">
+      <div class="sectiontitle">
+        <h2>Match-Verlauf</h2>
+        <span>JEDER DART ZÄHLT</span>
+      </div>
+      <div id="log" aria-live="polite"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      KILLER CLUB
+      <span>GOOD DARTS. GREAT COMPANY.</span>
+      <span>Made for game night. ↗</span>
+    </footer>
+  </main>
+
+  <!-- ============================================================
+       MODALS & DIALOGS
+       ============================================================ -->
+
+  <!-- Setup / Match Start Dialog -->
+  <dialog id="setup">
+    <form id="setupForm">
+      <div class="eyebrow">LET'S PLAY</div>
+      <h2>Dein nächstes Match.</h2>
+      <p>Namen eintragen, Zahlen wählen, loslegen. 2–8 Spieler.</p>
+      <p class="profilehelp">
+        Gespeicherten Namen aus der Vorschlagsliste wählen oder einen neuen eingeben.
+        „Merken" speichert ein neues Profil samt künftiger Statistik auf diesem Gerät.
+      </p>
+
+      <datalist id="savedPlayers"></datalist>
+      <div id="setupRows"></div>
+      <button type="button" id="add" class="quiet">＋ Spieler hinzufügen</button>
+
+      <!-- Game Settings -->
+      <div class="settings">
+        <label>
+          Herzen bis zum Killer
+          <select id="lives">
+            <option>3</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Start Settings -->
+      <section class="startsettings">
+        <div class="eyebrow">WER FÄNGT AN?</div>
+
+        <!-- Duel Settings -->
+        <label id="duelSettings" class="toggleline">
+          <span>
+            Abwechselnder Start bei 2 Spielern
+            <small>Aus: Der erste Spieler in der Liste beginnt.</small>
+          </span>
+          <input type="checkbox" id="alternateStart" role="switch">
+        </label>
+
+        <!-- Group Settings -->
+        <label id="groupSettings">
+          Startspieler bei 3–8 Spielern
+          <select id="startMode">
+            <option value="random">Zufällig bestimmen</option>
+            <option value="bull">Ausbullen</option>
+          </select>
+        </label>
+
+        <!-- Bull Settings -->
+        <div id="bullSettings">
+          <p>Jeder wirft auf das Bull. Wer am nächsten liegt, beginnt. Bei Gleichstand erneut werfen.</p>
+          <label>
+            Gewinner des Ausbullens
+            <select id="bullWinner"></select>
+          </label>
+        </div>
+
+        <p id="startPreview" aria-live="polite"></p>
+      </section>
+
+      <!-- Game Rules -->
+      <p class="ruletext">
+        Start mit 0 Herzen. Eigene Zahl: Single +1, Double +2, Triple +3, maximal 3 Herzen.
+        Mit 3 Herzen bist du Killer. Gegnerische Killer ziehen Herzen ab.
+        Bei einem Angriff auf 0 Herzen scheidest du aus; die 0 Herzen am Start allein eliminieren dich nicht.
+      </p>
+
+      <!-- Error Display -->
+      <p id="error" role="alert"></p>
+
+      <!-- Dialog Actions -->
+      <div class="dialogactions">
+        <button type="button" id="cancel" class="quiet">Abbrechen</button>
+        <button class="primary" type="submit">Match starten ↗</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Rules Dialog -->
+  <dialog id="rules">
+    <div class="eyebrow">HOW TO PLAY</div>
+    <h2>Killer. Einfach erklärt.</h2>
+    <ol>
+      <li>
+        <b>Starte bei null.</b>
+        Alle starten mit 0 von 3 Herzen und sind im Spiel.
+      </li>
+      <li>
+        <b>Baue Herzen auf.</b>
+        Triff deine eigene Zahl: Single +1, Double +2, Triple +3.
+        Herzen bleiben über Runden erhalten; maximal 3.
+      </li>
+      <li>
+        <b>Volle Herzen = Killer.</b>
+        Mit 3 Herzen kannst du Gegner angreifen: Single −1, Double −2, Triple −3.
+        Nach Herzverlust füllst du dein eigenes Feld wieder auf.
+      </li>
+      <li>
+        <b>Null nach einem Angriff = raus.</b>
+        Ausgeschiedene Spieler können nicht zurückkehren.
+        Wer als Letzter übrig bleibt, gewinnt.
+      </li>
+    </ol>
+    <p>
+      Die eigene Zahl baut immer Herzen auf, bis maximal 3. Daneben, Bull und unbelegte Felder haben keinen Effekt.
+      Pro Aufnahme hast du drei Darts.
+    </p>
+    <button class="primary" id="closeRules">Alles klar →</button>
+  </dialog>
+
+  <!-- Player Profiles Dialog -->
+  <dialog id="profilesDialog">
+    <div class="eyebrow">THE CLUB / SPIELERPROFILE</div>
+    <h2>Deine Runde. Eure Bilanz.</h2>
+    <p>Gespeichert auf diesem Gerät · Nur abgeschlossene Matches zählen.</p>
+
+    <!-- Profile List -->
+    <div id="profileList"></div>
+
+    <!-- Head to Head Section -->
+    <section class="duelpanel">
+      <div class="eyebrow">HEAD TO HEAD</div>
+      <h3>Das direkte Duell</h3>
+      <div class="compare">
+        <select id="compareA" aria-label="Erster Vergleichsspieler"></select>
+        <span>VS</span>
+        <select id="compareB" aria-label="Zweiter Vergleichsspieler"></select>
+      </div>
+      <div id="duelResult" aria-live="polite"></div>
+    </section>
+
+    <button id="closeProfiles" class="primary">Zurück zum Board →</button>
+  </dialog>
+
+  <!-- Script -->
+  <script src="app.js"></script>
+</body>
+</html>
